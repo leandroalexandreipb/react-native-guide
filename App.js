@@ -1,11 +1,20 @@
 import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
-import { StyleSheet, Text, View, TextInput, Button, Alert } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Button,
+  Alert,
+  Image,
+  Switch,
+} from "react-native";
 
 export default function App() {
   const [text, onChangeText] = useState("");
   const [inputDisabled, setInputDisabled] = useState(false);
-
+  const [showImage, setShowImage] = useState(false);
   const createTwoButtonAlert = () =>
     Alert.alert("Alert Title", text, [
       {
@@ -36,6 +45,22 @@ export default function App() {
         title="Open alert"
         color="#841584"
       />
+      <Switch
+        trackColor={{ false: "#767577", true: "#81b0ff" }}
+        thumbColor={showImage ? "#f5dd4b" : "#f4f3f4"}
+        ios_backgroundColor="#3e3e3e"
+        onValueChange={setShowImage}
+        value={showImage}
+      />
+      {showImage && (
+        <Image
+          style={styles.tinyLogo}
+          source={{
+            uri: "https://reactnative.dev/img/tiny_logo.png",
+          }}
+        />
+      )}
+
       <StatusBar style="auto" />
     </View>
   );
@@ -53,5 +78,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
+  },
+  tinyLogo: {
+    marginTop: 10,
+    width: 50,
+    height: 50,
   },
 });

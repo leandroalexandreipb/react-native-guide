@@ -6,15 +6,34 @@ import {
   Text,
   View,
   StyleSheet,
+  Alert,
 } from 'react-native'
 
 const SimpleTextDisplay: React.FC = () => {
   const [inputText, setInputText] = useState<string>('')
   const [displayText, setDisplayText] = useState<string>('')
+  const [isInputDisabled, setIsInputDisabled] = useState<boolean>(false)
 
-  const handlePress = () => {
-    setDisplayText(inputText)
-    setInputText('')
+  const handleShowTextPress = () => {
+    Alert.alert(
+      'Confirm',
+      'Do you want to display the text?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: () => setDisplayText(inputText),
+        },
+      ],
+      { cancelable: true }
+    )
+  }
+
+  const toggleInput = () => {
+    setIsInputDisabled((prevState) => !prevState)
   }
 
   return (
@@ -24,8 +43,18 @@ const SimpleTextDisplay: React.FC = () => {
         placeholder="Type something..."
         value={inputText}
         onChangeText={setInputText}
+        editable={!isInputDisabled}
+        placeholderTextColor={isInputDisabled ? '#aaa' : '#888'}
       />
-      <Button title="Show Text" onPress={handlePress} />
+
+      <View style={styles.toggleButtonContainer}>
+        <Button
+          title={isInputDisabled ? 'Enable Input' : 'Disable Input'}
+          onPress={toggleInput}
+        />
+      </View>
+      <Button title="Show Text" onPress={handleShowTextPress} />
+
       <View style={styles.textContainer}>
         <Text style={styles.displayedText}>{displayText}</Text>
       </View>
@@ -49,6 +78,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 8,
     backgroundColor: '#fff',
+  },
+  toggleButtonContainer: {
+    marginTop: 10,
   },
   textContainer: {
     marginTop: 20,

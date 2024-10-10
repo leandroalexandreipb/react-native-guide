@@ -1,63 +1,55 @@
 import React, { useState } from 'react'
 import {
   SafeAreaView,
-  TextInput,
-  Button,
   Text,
-  View,
   StyleSheet,
-  Alert,
+  TextInput,
+  View,
+  Button,
+  TouchableOpacity,
+  FlatList,
 } from 'react-native'
 
-const SimpleTextDisplay: React.FC = () => {
-  const [inputText, setInputText] = useState<string>('')
-  const [displayText, setDisplayText] = useState<string>('')
-  const [isInputDisabled, setIsInputDisabled] = useState<boolean>(false)
+interface Task {
+  key: string
+  task: string
+}
+const ToDoApp: React.FC = () => {
+  const [task, setTask] = useState<string>('')
+  const [taskList, setTaskList] = useState<Task[]>([])
+  const addTask = () => {
+    if (task.trim()) {
+      const newTask: Task = {
+        key: Math.random().toString(),
+        task: task,
+      }
 
-  const handleShowTextPress = () => {
-    Alert.alert(
-      'Confirm',
-      'Do you want to display the text?',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'OK',
-          onPress: () => setDisplayText(inputText),
-        },
-      ],
-      { cancelable: true }
-    )
+      setTaskList((prevTaskList) => [...prevTaskList, newTask])
+      setTask('')
+    }
   }
-
-  const toggleInput = () => {
-    setIsInputDisabled((prevState) => !prevState)
-  }
-
   return (
     <SafeAreaView style={styles.container}>
-      <TextInput
-        style={styles.input}
-        placeholder="Type something..."
-        value={inputText}
-        onChangeText={setInputText}
-        editable={!isInputDisabled}
-        placeholderTextColor={isInputDisabled ? '#aaa' : '#888'}
-      />
-
-      <View style={styles.toggleButtonContainer}>
-        <Button
-          title={isInputDisabled ? 'Enable Input' : 'Disable Input'}
-          onPress={toggleInput}
+      <Text style={styles.title}>To-Do List</Text>
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter a task"
+          value={task}
+          onChangeText={setTask}
+          placeholderTextColor="#888"
         />
+        <Button title="Add" onPress={addTask} color="#4CAF50" />
       </View>
-      <Button title="Show Text" onPress={handleShowTextPress} />
-
-      <View style={styles.textContainer}>
-        <Text style={styles.displayedText}>{displayText}</Text>
-      </View>
+      <FlatList
+        data={taskList}
+        keyExtractor={(item) => item.key}
+        renderItem={(itemData) => (
+          <TouchableOpacity style={styles.taskItem}>
+            <Text style={styles.taskText}>{itemData.item.task}</Text>
+          </TouchableOpacity>
+        )}
+      />
     </SafeAreaView>
   )
 }
@@ -66,33 +58,56 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    justifyContent: 'center',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#F5F5F5',
     marginHorizontal: 16,
   },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 20,
+    marginTop: 8,
+    color: '#333',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    marginBottom: 20,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   input: {
+    flex: 1,
     height: 40,
-    borderColor: '#ccc',
+    borderColor: '#ddd',
     borderWidth: 1,
-    paddingHorizontal: 10,
-    marginBottom: 10,
     borderRadius: 8,
+    paddingHorizontal: 10,
+    marginRight: 10,
     backgroundColor: '#fff',
   },
-  toggleButtonContainer: {
-    marginTop: 10,
+  list: {
+    flex: 1,
   },
-  textContainer: {
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: '#e0e0e0',
-    borderRadius: 8,
+  taskItem: {
+    backgroundColor: '#fff',
+    padding: 15,
+    marginVertical: 2,
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 8,
+    elevation: 4,
   },
-  displayedText: {
-    fontSize: 18,
+  taskText: {
+    fontSize: 16,
     color: '#333',
+  },
+  emptyMessage: {
     textAlign: 'center',
+    marginTop: 20,
+    color: '#888',
   },
 })
 
-export default SimpleTextDisplay
+export default ToDoApp

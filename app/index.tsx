@@ -1,113 +1,43 @@
-import React, { useState } from 'react'
-import {
-  SafeAreaView,
-  Text,
-  StyleSheet,
-  TextInput,
-  View,
-  Button,
-  TouchableOpacity,
-  FlatList,
-} from 'react-native'
+import { Link, Stack, useNavigation, useRouter } from 'expo-router'
+import { Image, Text, View, StyleSheet, Button } from 'react-native'
 
-interface Task {
-  key: string
-  task: string
-}
-const ToDoApp: React.FC = () => {
-  const [task, setTask] = useState<string>('')
-  const [taskList, setTaskList] = useState<Task[]>([])
-  const addTask = () => {
-    if (task.trim()) {
-      const newTask: Task = {
-        key: Math.random().toString(),
-        task: task,
-      }
+export default function Home() {
+  const router = useRouter()
 
-      setTaskList((prevTaskList) => [...prevTaskList, newTask])
-      setTask('')
-    }
+  const goToDetails = () => {
+    router.push({
+      pathname: '/details',
+      params: { name: 'Bacon', age: 30 },
+    })
   }
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>To-Do List</Text>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter a task"
-          value={task}
-          onChangeText={setTask}
-          placeholderTextColor="#888"
-        />
-        <Button title="Add" onPress={addTask} color="#4CAF50" />
-      </View>
-      <FlatList
-        data={taskList}
-        keyExtractor={(item) => item.key}
-        renderItem={(itemData) => (
-          <TouchableOpacity style={styles.taskItem}>
-            <Text style={styles.taskText}>{itemData.item.task}</Text>
-          </TouchableOpacity>
-        )}
+    <View style={styles.container}>
+      <Stack.Screen
+        options={{
+          title: 'My home',
+          headerStyle: { backgroundColor: '#f4511e' },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+          headerTitle: 'Teste',
+          headerTitleAlign: 'center',
+        }}
       />
-    </SafeAreaView>
+      <Text>Home Screen</Text>
+      <Button title="Go to Details" onPress={goToDetails} />
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    backgroundColor: '#F5F5F5',
-    marginHorizontal: 16,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 20,
-    marginTop: 8,
-    color: '#333',
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    marginBottom: 20,
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'center',
   },
-  input: {
-    flex: 1,
-    height: 40,
-    borderColor: '#ddd',
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    marginRight: 10,
-    backgroundColor: '#fff',
-  },
-  list: {
-    flex: 1,
-  },
-  taskItem: {
-    backgroundColor: '#fff',
-    padding: 15,
-    marginVertical: 2,
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  taskText: {
-    fontSize: 16,
-    color: '#333',
-  },
-  emptyMessage: {
-    textAlign: 'center',
-    marginTop: 20,
-    color: '#888',
+  image: {
+    width: 120,
+    height: 50,
   },
 })
-
-export default ToDoApp
